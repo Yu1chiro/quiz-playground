@@ -124,6 +124,7 @@
     </div>
 
 <script>
+    // ... (SELURUH KODE QUIZ ANDA YANG SEBELUMNYA TETAP SAMA) ...
     const loadingScreen = document.getElementById('loadingScreen'), loadingBar = document.getElementById('loadingBar');
     const identityModal = document.getElementById('identityModal'), identityForm = document.getElementById('identityForm'), modalError = document.getElementById('modalError');
     const quizContainer = document.getElementById('quizContainer'), resultContainer = document.getElementById('resultContainer');
@@ -357,25 +358,43 @@
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-        const ws = new WebSocket(`${protocol}://${window.location.host}`);
+        let isChecking = false;
 
-        ws.onopen = () => {
-            console.log('Terhubung ke WebSocket dari halaman kuis');
-        };
-
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.type === 'maintenance_status_update' && data.isMaintenance) {
-                // Jika maintenance diaktifkan, paksa reload halaman.
-                // Server akan otomatis menyajikan halaman service.html
-                window.location.href = '/';
+        async function checkMaintenanceStatus() {
+            if (isChecking) return;
+            isChecking = true;
+            try {
+                const response = await fetch('/api/public/status');
+                const data = await response.json();
+                if (data.isMaintenance) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error("Gagal memeriksa status maintenance:", error);
+            } finally {
+                isChecking = false;
             }
-        };
+        }
 
-        ws.onclose = () => {
-            console.log('Koneksi WebSocket terputus dari halaman kuis.');
-        };
+        function setupWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+            const ws = new WebSocket(`${protocol}://${window.location.host}`);
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.type === 'maintenance_status_update' && data.isMaintenance) {
+                    window.location.href = '/';
+                }
+            };
+
+            ws.onclose = () => {
+                console.log('Koneksi WebSocket terputus dari halaman kuis.');
+            };
+        }
+        
+        checkMaintenanceStatus();
+        setupWebSocket();
+        setInterval(checkMaintenanceStatus, 3000);
     });
 </script>
 </body>

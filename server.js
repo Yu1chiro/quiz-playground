@@ -110,6 +110,10 @@ app.get("/", (req, res) => {
 app.get("/statistik", (req, res) => res.sendFile(path.join(__dirname, "public", "statistik.html")));
 app.get("/monitor", checkAuth, (req, res) => res.sendFile(path.join(__dirname, "public", "monitor.html")));
 
+app.get("/api/public/status", (req, res) => {
+  res.json({ isMaintenance: isMaintenanceMode });
+});
+
 app.get("/api/maintenance-status", checkAuth, (req, res) => {
   res.json({ isMaintenance: isMaintenanceMode });
 });
@@ -411,7 +415,9 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
 wss.on('connection', (ws) => {
+  console.log('Client terhubung ke WebSocket');
   ws.on('close', () => {
+    console.log('Client terputus dari WebSocket');
   });
 });
 
