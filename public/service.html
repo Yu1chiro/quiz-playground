@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dalam Perbaikan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="shortcut icon" href="https://6afuiqe8xb.ucarecd.net/278cf1a5-2273-4c27-89a9-b2f60b90e75d/shibainuwrittingonpapernoteillustrationsvgdownloadpng9803777.png" type="image/x-icon">
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex flex-col items-center justify-center text-center p-4">
+        <div class="bg-white p-8 sm:p-12 rounded-2xl shadow-lg max-w-md w-full">
+            <img src="https://ucarecdn.com/04f87be8-6ae9-4842-9672-93a8f8fce540/shibainudogsummerillustrationsvgdownloadpng8921610.png" alt="Maintenance" class="w-32 h-32 mx-auto mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Quiz belum siap</h1>
+            <p class="text-gray-600">
+                Karena atmin lagi bikin soal sabar ya mas
+            </p>
+        </div>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+        const ws = new WebSocket(`${protocol}://${window.location.host}`);
+
+        ws.onopen = () => {
+            console.log('Terhubung ke WebSocket dari halaman maintenance');
+        };
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.type === 'maintenance_status_update' && !data.isMaintenance) {
+                // Jika maintenance dinonaktifkan, paksa reload halaman.
+                // Server akan otomatis menyajikan halaman quiz.html
+                window.location.href = '/';
+            }
+        };
+
+        ws.onclose = () => {
+            console.log('Koneksi WebSocket terputus dari halaman maintenance.');
+        };
+    });
+</script>
+</body>
+</html>

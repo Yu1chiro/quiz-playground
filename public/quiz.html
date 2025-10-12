@@ -355,5 +355,28 @@
         }
     }
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+        const ws = new WebSocket(`${protocol}://${window.location.host}`);
+
+        ws.onopen = () => {
+            console.log('Terhubung ke WebSocket dari halaman kuis');
+        };
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.type === 'maintenance_status_update' && data.isMaintenance) {
+                // Jika maintenance diaktifkan, paksa reload halaman.
+                // Server akan otomatis menyajikan halaman service.html
+                window.location.href = '/';
+            }
+        };
+
+        ws.onclose = () => {
+            console.log('Koneksi WebSocket terputus dari halaman kuis.');
+        };
+    });
+</script>
 </body>
 </html>

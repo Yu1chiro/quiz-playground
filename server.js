@@ -3,9 +3,13 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const { Pool } = require("pg");
+const http = require('http');
+const { WebSocketServer } = require('ws');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+let isMaintenanceMode = true;
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
@@ -95,10 +99,34 @@ app.post("/api/logout", (req, res) => {
   res.status(200).json({ success: true, message: "Logout berhasil", redirectUrl: "/login" });
 });
 
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "quiz.html")));
+app.get("/", (req, res) => {
+  if (isMaintenanceMode) {
+    res.sendFile(path.join(__dirname, "public", "service.html"));
+  } else {
+    res.sendFile(path.join(__dirname, "public", "quiz.html"));
+  }
+});
+
 app.get("/statistik", (req, res) => res.sendFile(path.join(__dirname, "public", "statistik.html")));
 app.get("/monitor", checkAuth, (req, res) => res.sendFile(path.join(__dirname, "public", "monitor.html")));
 
+app.get("/api/maintenance-status", checkAuth, (req, res) => {
+  res.json({ isMaintenance: isMaintenanceMode });
+});
+
+app.post("/api/maintenance-status", checkAuth, (req, res) => {
+  const { isMaintenance } = req.body;
+  if (typeof isMaintenance === 'boolean') {
+    isMaintenanceMode = isMaintenance;
+    console.log(`Mode Maintenance diubah menjadi: ${isMaintenanceMode}`);
+    broadcastStatus(isMaintenanceMode);
+    res.json({ success: true, message: "Status maintenance berhasil diubah.", isMaintenance: isMaintenanceMode });
+  } else {
+    res.status(400).json({ success: false, message: "Nilai status tidak valid." });
+  }
+});
+
+// ... (sisa kode API Anda tidak berubah)
 app.get("/api/quizzes", checkAuth, async (req, res) => {
   try {
     const { rows } = await pool.query("SELECT * FROM quizzes ORDER BY id ASC");
@@ -288,10 +316,7 @@ app.post("/api/submit-quiz", async (req, res) => {
     const totalQuestions = quizzes.length;
     const finalScore = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
     await pool.query("INSERT INTO submissions (student_name, student_absen, student_class, score, wrong_answers) VALUES ($1, $2, $3, $4, $5)", [student_name, student_absen, student_class, finalScore, JSON.stringify(wrong_answers)]);
-
-    // --- BARIS TAMBAHAN UNTUK MENGHAPUS SESI ---
     await pool.query("DELETE FROM quiz_sessions WHERE student_absen = $1 AND student_class = $2", [student_absen, student_class]);
-    // -------------------------------------------
 
     res.status(201).json({ success: true, message: "Jawaban berhasil disimpan!", score: finalScore });
   } catch (err) {
@@ -382,7 +407,27 @@ app.get("/api/sessions", checkAuth, async (req, res) => {
   }
 });
 
-app.listen(PORT, async () => {
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server });
+
+wss.on('connection', (ws) => {
+  ws.on('close', () => {
+  });
+});
+
+function broadcastStatus(isMaintenance) {
+  const message = JSON.stringify({
+    type: 'maintenance_status_update',
+    isMaintenance: isMaintenance
+  });
+  wss.clients.forEach((client) => {
+    if (client.readyState === 1) { // 1 means OPEN
+      client.send(message);
+    }
+  });
+}
+
+server.listen(PORT, async () => {
   await setupDatabase();
   console.log(`🚀 Server berjalan di http://localhost:${PORT}`);
 });
