@@ -31,22 +31,7 @@
             
             <div class="bg-white p-6 rounded-lg shadow">
                 <h2 id="formTitle" class="text-2xl font-bold mb-4">Tambah Soal Kuis Baru</h2>
-                
-                <div class="border rounded-lg p-4 mb-6">
-                    <label for="maintenanceToggle" class="flex items-center justify-between cursor-pointer">
-                        <div class="mr-3">
-                            <p class="text-base font-medium text-gray-900">Status Kuis</p>
-                            <p id="toggleStatusText" class="text-sm text-gray-500">Saat ini Nonaktif (Mode Perbaikan).</p>
-                        </div>
-                        <div class="relative">
-                            <input type="checkbox" id="maintenanceToggle" class="sr-only peer">
-                            <div class="w-14 h-8 bg-gray-300 rounded-full peer peer-checked:bg-green-500 transition-colors"></div>
-                            <div class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full peer-checked:translate-x-full transition-transform"></div>
-                        </div>
-                    </label>
-                </div>
-
-                <button onclick="window.location.href='/monitor'" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700 flex items-center gap-2 mb-4">
+                <button onclick="window.location.href='/monitor'" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700 flex items-center gap-2">
                         Monitoring siswa
                     </button>
                 <form id="addQuizForm" class="space-y-4">
@@ -155,100 +140,17 @@
         const removeImageBtn = document.getElementById('removeImageBtn');
         const imageBase64Input = document.getElementById('imageBase64');
         const imageMimeTypeInput = document.getElementById('imageMimeType');
-        const maintenanceToggle = document.getElementById('maintenanceToggle');
-        const toggleStatusText = document.getElementById('toggleStatusText');
 
         let allQuizzes = [];
 
         document.addEventListener('DOMContentLoaded', () => {
-            loadMaintenanceStatus();
-            setupWebSocket();
             loadQuizzes();
             loadSubmissions();
         });
         
-        maintenanceToggle.addEventListener('change', handleMaintenanceToggle);
         classFilter.addEventListener('change', () => loadSubmissions(classFilter.value));
         downloadBtn.addEventListener('click', downloadExcel);
         cancelBtn.addEventListener('click', cancelEdit);
-
-        function setupWebSocket() {
-            const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-            const ws = new WebSocket(`${protocol}://${window.location.host}`);
-
-            ws.onopen = () => {
-                console.log('Terhubung ke server WebSocket');
-            };
-
-            ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                if (data.type === 'maintenance_status_update') {
-                    const isActive = !data.isMaintenance;
-                    maintenanceToggle.checked = isActive;
-                    updateToggleText(isActive);
-                }
-            };
-
-            ws.onclose = () => {
-                console.log('Koneksi WebSocket terputus. Mencoba menghubungkan kembali dalam 5 detik.');
-                setTimeout(setupWebSocket, 5000);
-            };
-        }
-
-        async function loadMaintenanceStatus() {
-            try {
-                const response = await fetch('/api/maintenance-status');
-                if (!response.ok) throw new Error('Gagal memuat status');
-                const data = await response.json();
-                maintenanceToggle.checked = !data.isMaintenance;
-                updateToggleText(maintenanceToggle.checked);
-            } catch (error) {
-                console.error('Error:', error);
-                toggleStatusText.textContent = 'Gagal memuat status.';
-            }
-        }
-
-        async function handleMaintenanceToggle(event) {
-            const isActive = event.target.checked;
-            const isMaintenance = !isActive;
-            
-            loadingOverlay.classList.remove('hidden');
-
-            try {
-                const response = await fetch('/api/maintenance-status', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ isMaintenance: isMaintenance })
-                });
-
-                if (!response.ok) throw new Error('Gagal mengubah status');
-                
-                const result = await response.json();
-                updateToggleText(isActive);
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: `Status kuis berhasil diubah menjadi ${isActive ? 'Aktif' : 'Nonaktif'}.`,
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-
-            } catch (error) {
-                Swal.fire('Gagal', `Terjadi kesalahan: ${error.message}`, 'error');
-                event.target.checked = !isActive;
-            } finally {
-                loadingOverlay.classList.add('hidden');
-            }
-        }
-
-        function updateToggleText(isActive) {
-            if (isActive) {
-                toggleStatusText.textContent = 'Saat ini Aktif (Siswa bisa mengerjakan).';
-            } else {
-                toggleStatusText.textContent = 'Saat ini Nonaktif (Mode Perbaikan).';
-            }
-        }
 
         imageFileInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
