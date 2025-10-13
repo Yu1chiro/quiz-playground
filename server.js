@@ -95,8 +95,8 @@ app.post("/api/logout", (req, res) => {
   res.status(200).json({ success: true, message: "Logout berhasil", redirectUrl: "/login" });
 });
 
-// app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "quiz.html")));
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "service.html")));
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "quiz.html")));
+// app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "service.html")));
 app.get("/statistik", (req, res) => res.sendFile(path.join(__dirname, "public", "statistik.html")));
 app.get("/monitor", checkAuth, (req, res) => res.sendFile(path.join(__dirname, "public", "monitor.html")));
 
