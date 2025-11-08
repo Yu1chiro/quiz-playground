@@ -6,119 +6,272 @@
     <title>Quiz Playground</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="shortcut icon" href="https://6afuiqe8xb.ucarecd.net/278cf1a5-2273-4c27-89a9-b2f60b90e75d/shibainuwrittingonpapernoteillustrationsvgdownloadpng9803777.png" type="image/x-icon">
+    <link rel="shortcut icon" href="https://6afuiqe8xb.ucarecd.net/278cf1a5-2783-4c27-89a9-b2f60b90e75d/shibainuwrittingonpapernoteillustrationsvgdownloadpng9803777.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'academic-blue': '#1e40af',
-                        'academic-dark-blue': '#1e3a8a',
-                        'academic-light-blue': '#dbeafe',
-                        'academic-yellow': '#fbbf24',
-                        'academic-dark-yellow': '#f59e0b',
+                        'neo-yellow': '#FFEB3B',
+                        'neo-pink': '#FF6B9D',
+                        'neo-blue': '#4FC3F7',
+                        'neo-green': '#66FF99',
+                        'neo-purple': '#C77DFF',
+                        'neo-orange': '#FF9800',
+                    },
+                    fontFamily: {
+                        'pixel': ['"Press Start 2P"', 'cursive'],
+                        'japanese': ['"Noto Sans JP"', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
     <style>
-        .animate-fade-in { animation: fadeIn 0.5s ease-in-out; } 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        * {
+            image-rendering: pixelated;
+        }
+        
+        body {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        /* ATURAN GLOBAL ANDA */
+        p {
+            font-size: 12px!important;
+        }
+        
+        .text-normal {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            line-height: 1.5;
+        }
+        
+        .text-japanese {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        
+        .pixel-border {
+            border: 4px solid #000;
+            box-shadow: 8px 8px 0px #000;
+        }
+        
+        .pixel-border-sm {
+            border: 3px solid #000;
+            box-shadow: 4px 4px 0px #000;
+        }
+        
+        .pixel-btn {
+            border: 4px solid #000;
+            box-shadow: 6px 6px 0px #000;
+            transition: all 0.1s;
+        }
+        
+        .pixel-btn:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 4px 4px 0px #000;
+        }
+        
+        .pixel-btn:active {
+            transform: translate(6px, 6px);
+            box-shadow: 0px 0px 0px #000;
+        }
+        
+        .animate-fade-in { 
+            animation: fadeIn 0.5s ease-in-out; 
+        } 
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
         .no-copy {
             -webkit-user-select: none;
             -ms-user-select: none;
             user-select: none;
         }
+        
+        .pixel-progress {
+            height: 20px;
+            border: 3px solid #000;
+            background: repeating-linear-gradient(
+                90deg,
+                #fff 0px,
+                #fff 10px,
+                #f0f0f0 10px,
+                #f0f0f0 20px
+            );
+        }
+        
+        .pixel-progress-bar {
+            height: 100%;
+            border-right: 3px solid #000;
+            background: repeating-linear-gradient(
+                90deg,
+                #4FC3F7 0px,
+                #4FC3F7 10px,
+                #3BA4D0 10px,
+                #3BA4D0 20px
+            );
+        }
+
+        /* --- [BARU] CSS UNTUK KONTEN QUILL --- */
+        .question-content {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #000;
+        }
+        .question-content p {
+            font-size: 16px !important; /* Menimpa aturan global p Anda */
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .question-content p:last-child {
+            margin-bottom: 0;
+        }
+        .question-content strong { font-weight: bold; }
+        .question-content em { font-style: italic; }
+        .question-content u { text-decoration: underline; }
+        .question-content ol, .question-content ul {
+            padding-left: 2em;
+            margin-bottom: 12px;
+        }
+        .question-content li { margin-bottom: 6px; }
+        .question-content ul li { list-style-type: disc; }
+        .question-content ol li { list-style-type: decimal; }
+        .question-content h1, .question-content h2, .question-content h3 {
+            font-family: 'Press Start 2P', cursive;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+        .question-content h1 { font-size: 22px; }
+        .question-content h2 { font-size: 20px; }
+        .question-content h3 { font-size: 18px; }
+        .question-content blockquote {
+            border-left: 4px solid #888;
+            padding-left: 16px;
+            margin: 10px 0;
+            font-style: italic;
+        }
+        .question-content pre {
+            background-color: #f0f0f0;
+            border: 3px solid #000;
+            padding: 10px;
+            overflow-x: auto;
+            font-family: monospace;
+            margin: 12px 0;
+        }
+        /* --- [BARU] AKHIR DARI CSS KONTEN QUILL --- */
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 font-sans min-h-screen">
-    <div id="cheatOverlay" class="fixed inset-0 bg-red-700 z-[9999] flex-col items-center justify-center text-center p-4 text-white hidden">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-white mb-4" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-        </svg>
-        <h2 class="text-2xl font-bold text-white mb-2"> QUIZ DITANGGUHKAN!</h2>
-        <p class="text-sm max-w-lg" style="white-space: pre-line;">Anda Terdeteksi Melakukan Browsing! 
-        Pengurangan point diberikan berdasarkan jumlah pelanggaran yg anda lakukan 
-        Melakukan refresh pada halaman ini dapat mereset progress quiz anda 
-        Silahkan hubungi admin untuk membuka akses
-        </p>
-    </div>
-
-    <div id="loadingScreen" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center transition-opacity duration-500">
-        <div class="flex justify-center mb-5">
-            <img src="https://ucarecdn.com/04f87be8-6ae9-4842-9672-93a8f8fce540/shibainudogsummerillustrationsvgdownloadpng8921610.png" width="100px" height="auto" class="rounded-full" alt="">
+<body class="bg-neo-yellow min-h-screen">
+    <div id="cheatOverlay" class="fixed inset-0 bg-red-600 z-[9999] flex-col items-center justify-center text-center p-4 text-white hidden border-8 border-black">
+        <div class="bg-black p-6 pixel-border bg-red-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-white mb-4 mx-auto" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+            <h2 class="text-xl font-pixel text-white mb-4">QUIZ DITANGGUHKAN!</h2>
+            <p class="text-xs leading-relaxed" style="white-space: pre-line;">Anda Terdeteksi Melakukan Browsing! 
+Pengurangan point diberikan berdasarkan jumlah pelanggaran yg anda lakukan 
+Melakukan refresh pada halaman ini dapat mereset progress quiz anda 
+Silahkan hubungi admin untuk membuka akses</p>
         </div>
-        <h2 class="text-2xl font-bold text-academic-blue mb-2">こんにちは！</h2>
-        <p class="text-gray-600">Loading...</p>
-        <div class="mt-6 w-64 h-2 bg-gray-200 rounded-full overflow-hidden"><div id="loadingBar" class="h-full bg-academic-blue rounded-full w-0 transition-all duration-1000"></div></div>
     </div>
 
-    <div id="identityModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-40 p-4 opacity-0 transition-opacity duration-300 scale-95">
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-md transform transition-transform duration-300">
-            <div class="text-center mb-2">
-                <div class="flex justify-center mb-5">
-                    <img src="https://6afuiqe8xb.ucarecd.net/278cf1a5-2273-4c27-89a9-b2f60b90e75d/shibainuwrittingonpapernoteillustrationsvgdownloadpng9803777.png" width="80px" height="auto" alt="">
+    <div id="loadingScreen" class="fixed inset-0 bg-neo-pink z-50 flex flex-col items-center justify-center transition-opacity duration-500 border-8 border-black">
+        <div class="flex justify-center mb-5 pixel-border-sm bg-white p-4">
+            <img src="https://ucarecdn.com/04f87be8-6ae9-4842-9672-93a8f8fce540/shibainudogsummerillustrationsvgdownloadpng8921610.png" width="100px" height="auto" alt="">
+        </div>
+        <h2 class="text-xl font-pixel text-black mb-4 bg-white px-6 py-3 pixel-border-sm">こんにちは！</h2>
+        <p class="text-sm font-pixel text-black bg-white px-4 py-2 pixel-border-sm mb-6">Loading...</p>
+        <div class="w-64 pixel-progress">
+            <div id="loadingBar" class="pixel-progress-bar w-0 transition-all duration-1000"></div>
+        </div>
+    </div>
+
+    <div id="identityModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-40 p-4 opacity-0 transition-opacity duration-300 scale-95">
+        <div class="bg-neo-blue p-6 pixel-border w-full max-w-sm transform transition-transform duration-300">
+            <div class="text-center mb-4">
+                <div class="flex justify-center mb-4">
+                    <div class="bg-white p-2 pixel-border-sm">
+                        <img src="https://ucarecdn.com/04f87be8-6ae9-4842-9672-93a8f8fce540/shibainudogsummerillustrationsvgdownloadpng8921610.png" width="60px" height="auto" alt="">
+                    </div>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-800">Masukkan identitas</h2>
-                <p id="modalError" class="text-red-500 text-sm text-center mt-2 mb-3"></p>
+                <h2 class="text-sm font-pixel text-black bg-white px-3 py-2 pixel-border-sm inline-block mb-3">Masukkan identitas</h2>
+                <p id="modalError" class="text-red-600 text-[10px] font-pixel text-center mt-3 mb-2 bg-white p-2 pixel-border-sm leading-relaxed"></p>
             </div>
-            <form id="identityForm" class="space-y-5 mt-6">
+            <form id="identityForm" class="space-y-3 mt-4">
                 <div>
-                    <label for="student_name" class="block text-sm font-semibold text-gray-700 mb-2">Nama Lengkap</label>
-                    <input type="text" id="student_name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-academic-blue" placeholder="Masukkan nama lengkap">
+                    <label for="student_name" class="block text-[10px] font-pixel text-black mb-2 bg-white px-2 py-1 pixel-border-sm inline-block">Nama Lengkap</label>
+                    <input type="text" id="student_name" required class="w-full px-3 py-2 border-4 border-black bg-white text-sm text-normal focus:outline-none focus:translate-x-1 focus:translate-y-1" placeholder="Masukkan nama lengkap">
                 </div>
                 <div>
-                    <label for="student_absen" class="block text-sm font-semibold text-gray-700 mb-2">Nomor Absen</label>
-                    <input type="number" id="student_absen" required class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-academic-blue" placeholder="Masukkan nomor absen">
+                    <label for="student_absen" class="block text-[10px] font-pixel text-black mb-2 bg-white px-2 py-1 pixel-border-sm inline-block">Nomor Absen</label>
+                    <input type="number" id="student_absen" required class="w-full px-3 py-2 border-4 border-black bg-white text-sm text-normal focus:outline-none focus:translate-x-1 focus:translate-y-1" placeholder="Nomor absen">
                 </div>
                 <div>
-                    <label for="student_class" class="block text-sm font-semibold text-gray-700 mb-2">Kelas</label>
-                    <select id="student_class" required class="w-full px-4 py-3 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-academic-blue appearance-none">
+                    <label for="student_class" class="block text-[10px] font-pixel text-black mb-2 bg-white px-2 py-1 pixel-border-sm inline-block">Kelas</label>
+                    <select id="student_class" required class="w-full px-3 py-2 border-4 border-black bg-white text-sm text-normal focus:outline-none appearance-none">
                         <option value="" disabled selected>Pilih kelas</option>
                         <option value="XII.H">XII.H</option><option value="XII.I">XII.I</option><option value="XII.J">XII.J</option>
                     </select>
                 </div>
-                <button type="submit" id="submitIdentity" class="w-full bg-gradient-to-r from-academic-blue to-academic-dark-blue text-white py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center"><span>Mulai Quiz</span></button>
+                <button type="submit" id="submitIdentity" class="w-full bg-neo-green text-black py-2.5 font-pixel text-[10px] pixel-btn flex items-center justify-center mt-4"><span>Mulai Quiz</span></button>
             </form>
         </div>
     </div>
 
     <div id="quizContainer" class="hidden container mx-auto p-4 md:p-8 max-w-3xl no-copy">
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-xl">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-4 border-b border-gray-200">
+        <div class="bg-neo-purple p-4 md:p-6 pixel-border">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 pb-3 border-b-4 border-black gap-2">
                 <div>
-                    <h1 class="text-xl md:text-2xl font-bold text-gray-800">日本語クイズ</h1>
-                    <p class="text-gray-600 text-sm mt-1">がんばってください！</p>
+                    <h1 class="text-sm font-japanese font-bold text-black bg-white px-3 py-1.5 pixel-border-sm inline-block mb-2">日本語クイズ</h1>
+                    <p class="text-[10px] font-japanese text-black bg-neo-yellow px-2 py-1 pixel-border-sm inline-block">がんばってください！</p>
                 </div>
-                <div class="mt-2 md:mt-0 flex items-center">
-                    <div class="bg-academic-light-blue text-academic-blue px-3 py-1 rounded-full text-sm font-medium"><span id="studentClassDisplay"></span></div>
-                    <div class="ml-3 bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium"><span id="studentNameDisplay"></span></div>
+                <div class="flex items-center flex-wrap gap-2">
+                    <div class="bg-neo-blue text-black px-2 py-1 pixel-border-sm text-[10px] font-pixel"><span id="studentClassDisplay"></span></div>
+                    <div class="bg-neo-green text-black px-2 py-1 pixel-border-sm text-[10px] text-normal font-semibold"><span id="studentNameDisplay"></span></div>
                 </div>
             </div>
-            <div class="mb-6">
-                <div class="flex justify-between items-center mb-2"><span class="text-sm font-semibold text-gray-600">Progress</span><span id="progressText" class="text-sm font-semibold text-academic-blue">Soal 0 dari 0</span></div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5"><div id="progressBar" class="bg-gradient-to-r from-academic-blue to-academic-dark-blue h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div></div>
+            <div class="mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-[10px] font-pixel text-black bg-white px-2 py-1 pixel-border-sm">Progress</span>
+                    <span id="progressText" class="text-[10px] font-pixel text-black bg-neo-orange px-2 py-1 pixel-border-sm">Soal 0 dari 0</span>
+                </div>
+                <div class="pixel-progress">
+                    <div id="progressBar" class="pixel-progress-bar transition-all duration-500" style="width: 0%"></div>
+                </div>
             </div>
-            <div id="questionArea" class="min-h-[300px]"></div>
-            <div class="mt-8 flex justify-between items-center pt-6 border-t border-gray-200">
-                <div class="flex items-center text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg><span id="timerDisplay">00:00</span></div>
+            <div id="questionArea" class="min-h-[300px] bg-white p-4 pixel-border-sm"></div>
+            <div class="mt-6 flex justify-between items-center pt-4 border-t-4 border-black">
+                <div class="flex items-center text-black bg-neo-yellow px-3 py-1.5 pixel-border-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span id="timerDisplay" class="text-[10px] font-pixel">00:00</span>
+                </div>
             </div>
         </div>
     </div>
     
-    <div id="resultContainer" class="hidden text-center container mx-auto p-4 md:p-8 max-w-4xl">
-        <div class="bg-white p-8 md:p-12 rounded-xl shadow-xl">
-            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 text-green-600 mb-6"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Quiz Selesai!</h1>
-            <p class="text-lg text-gray-600 mb-6">Terima kasih <strong id="resultName" class="text-academic-blue"></strong> telah berpartisipasi.</p>
-            <div class="bg-gradient-to-br from-academic-blue to-academic-dark-blue text-white p-8 rounded-xl max-w-md mx-auto mb-8 shadow-lg">
-                <p class="text-sm uppercase tracking-wider opacity-80">Nilai Akhir Anda</p>
-                <p id="resultScore" class="text-5xl md:text-6xl font-extrabold my-3">0</p>
-                <div class="w-full bg-white bg-opacity-20 rounded-full h-2.5 mt-4"><div id="scoreBar" class="bg-white h-2.5 rounded-full transition-all duration-1000" style="width: 0%"></div></div>
+    <div id="resultContainer" class="hidden text-center container mx-auto p-4 md:p-8 max-w-3xl">
+        <div class="bg-neo-green p-6 md:p-10 pixel-border">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-white pixel-border-sm text-black mb-5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </div>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-                <a href="/statistik" class="inline-flex items-center justify-center bg-gray-100 text-gray-800 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-all duration-200">Lihat statistik</a>
+            <h1 class="text-base font-pixel text-black mb-3 bg-white px-4 py-2 pixel-border-sm inline-block leading-relaxed">Quiz Selesai!</h1>
+            <p class="text-xs text-normal text-black mb-6">Terima kasih <strong id="resultName" class="text-black bg-neo-yellow px-2 py-0.5 font-semibold"></strong> telah berpartisipasi.</p>
+            <div class="bg-neo-pink text-black p-6 pixel-border max-w-sm mx-auto mb-6">
+                <p class="text-[10px] font-pixel uppercase tracking-wider mb-2">Nilai Akhir Anda</p>
+                <p id="resultScore" class="text-5xl font-pixel my-3">0</p>
+                <div class="pixel-progress mt-4">
+                    <div id="scoreBar" class="pixel-progress-bar transition-all duration-1000" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+                <a href="/statistik" class="inline-flex items-center justify-center bg-neo-blue text-black px-5 py-2.5 font-pixel text-[10px] pixel-btn">Lihat statistik</a>
             </div>
         </div>
     </div>
@@ -258,12 +411,12 @@
             quizQuestions = await response.json();
             if (!response.ok) throw new Error('Gagal memuat data soal.');
             if (quizQuestions.length === 0) {
-                questionArea.innerHTML = `<div class="text-center py-10"><h3 class="text-xl font-semibold">Tidak Ada Soal</h3><p>Admin belum menambahkan soal.</p></div>`;
+                questionArea.innerHTML = `<div class="text-center py-10"><h3 class="text-sm font-pixel mb-3 leading-relaxed">Tidak Ada Soal</h3><p class="text-xs text-normal">Admin belum menambahkan soal.</p></div>`;
                 return;
             }
             displayCurrentQuestion();
         } catch (error) {
-            questionArea.innerHTML = `<div class="text-center py-10"><h3 class="text-xl font-semibold">Terjadi Kesalahan</h3><p>${error.message}</p></div>`;
+            questionArea.innerHTML = `<div class="text-center py-10"><h3 class="text-sm font-pixel mb-3 leading-relaxed">Terjadi Kesalahan</h3><p class="text-xs text-normal">${error.message}</p></div>`;
         }
     }
 
@@ -276,16 +429,17 @@
         let imageHTML = '';
         if (question.image_base64 && question.image_mimetype) {
             const imageSrc = `data:${question.image_mimetype};base64,${question.image_base64}`;
-            imageHTML = `<div class="mb-6 overflow-hidden rounded-xl border border-gray-200"><img src="${imageSrc}" alt="Gambar Soal" class="w-full max-h-64 object-contain"></div>`;
+            imageHTML = `<div class="mb-6 pixel-border-sm overflow-hidden"><img src="${imageSrc}" alt="Gambar Soal" class="w-full max-h-64 object-contain bg-white"></div>`;
         }
 
         const questionHTML = `
             <div class="animate-fade-in">
                 ${imageHTML}
-                <p class="text-lg md:text-xl font-semibold mb-6 text-gray-800" style="white-space: pre-line;">${question.question}</p>
-                <div class="space-y-3">${Object.entries(question.options).map(([key, value]) => `
-                    <div><label class="flex items-center p-4 rounded-xl border border-gray-300 hover:bg-academic-light-blue hover:border-academic-blue cursor-pointer transition-all">
-                        <input type="radio" name="option" value="${key}" class="h-5 w-5 text-academic-blue"><span class="ml-4 text-gray-700 text-base">${value}</span>
+                <div class="question-content mb-5">${question.question}</div>
+                
+                <div class="space-y-2.5 mt-5">${Object.entries(question.options).map(([key, value]) => `
+                    <div><label class="flex items-start p-3 bg-white border-4 border-black cursor-pointer transition-all hover:translate-x-1 hover:translate-y-1">
+                        <input type="radio" name="option" value="${key}" class="h-5 w-5 mt-0.5 accent-black flex-shrink-0"><span class="ml-3 text-black text-sm text-normal leading-relaxed">${value}</span>
                     </label></div>`).join('')}
                 </div>
             </div>`;
@@ -299,7 +453,7 @@
         
         questionArea.querySelectorAll('input[name="option"]').forEach(opt => {
             opt.disabled = true;
-            opt.closest('label').classList.remove('hover:bg-academic-light-blue', 'hover:border-academic-blue');
+            opt.closest('label').classList.remove('hover:translate-x-1', 'hover:translate-y-1');
         });
         
         userAnswers.push({ questionId: currentQuestionId, answer: selectedValue });
@@ -313,11 +467,11 @@
             const result = await response.json();
             if (result.success) {
                 if (result.isCorrect) {
-                    selectedLabel.classList.add('bg-green-100', 'border-green-500', 'ring-2', 'ring-green-200');
+                    selectedLabel.classList.add('bg-neo-green');
                 } else {
-                    selectedLabel.classList.add('bg-red-100', 'border-red-500', 'ring-2', 'ring-red-200');
+                    selectedLabel.classList.add('bg-red-400');
                     const correctRadio = questionArea.querySelector(`input[value="${result.correctAnswer}"]`);
-                    if (correctRadio) correctRadio.closest('label').classList.add('bg-green-100', 'border-green-500');
+                    if (correctRadio) correctRadio.closest('label').classList.add('bg-neo-green');
                 }
             }
         } catch (error) { console.error("Gagal memeriksa jawaban:", error); }
@@ -336,7 +490,7 @@
         clearInterval(timerInterval);
         clearInterval(sessionCheckInterval);
         progressBar.style.width = '100%';
-        questionArea.innerHTML = `<div class="flex items-center justify-center py-16"><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-academic-blue"></div><p class="ml-4">Mengirim jawaban...</p></div>`;
+        questionArea.innerHTML = `<div class="flex items-center justify-center py-16"><div class="animate-spin rounded-full h-12 w-12 border-b-4 border-black"></div><p class="ml-4 text-[10px] font-pixel leading-relaxed">Mengirim jawaban...</p></div>`;
         
         const payload = { ...studentData, answers: userAnswers };
         try {
@@ -351,7 +505,7 @@
             window.location.href = `/statistik?absen=${studentData.student_absen}&kelas=${studentData.student_class}`;
 
         } catch (error) {
-            Swal.fire({ icon: 'error', title: 'Gagal Mengirim', text: error.message, confirmButtonColor: '#1e40af' });
+            Swal.fire({ icon: 'error', title: 'Gagal Mengirim', text: error.message, confirmButtonColor: '#000' });
         }
     }
 </script>
