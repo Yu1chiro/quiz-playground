@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <link rel="shortcut icon" href="https://6afuiqe8xb.ucarecd.net/278cf1a5-2273-4c27-89a9-b2f60b90e75d/shibainuwrittingonpapernoteillustrationsvgdownloadpng9803777.png" type="image/x-icon">
+    <link rel="shortcut icon"
+        href="https://6afuiqe8xb.ucarecd.net/278cf1a5-2273-4c27-89a9-b2f60b90e75d/shibainuwrittingonpapernoteillustrationsvgdownloadpng9803777.png"
+        type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0/dist/quill.snow.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0/dist/quill.js"></script>
     <script>
@@ -29,44 +33,79 @@
         }
     </script>
     <style>
-        body { 
-            font-family: 'Noto Sans', sans-serif; 
+        body {
+            font-family: 'Noto Sans', sans-serif;
             background-color: #FFEB3B;
             font-size: 14px;
             line-height: 1.5;
         }
-        .text-pixel { font-family: 'Press Start 2P', cursive; }
-        .pixel-border { border: 4px solid #000; box-shadow: 8px 8px 0px #000; }
-        .pixel-border-sm { border: 3px solid #000; box-shadow: 4px 4px 0px #000; }
-        .pixel-input { 
-            border: 4px solid #000; 
-            background-color: white; 
+
+        .text-pixel {
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        .pixel-border {
+            border: 4px solid #000;
+            box-shadow: 8px 8px 0px #000;
+        }
+
+        .pixel-border-sm {
+            border: 3px solid #000;
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        .pixel-input {
+            border: 4px solid #000;
+            background-color: white;
             font-family: 'Noto Sans', sans-serif;
             font-size: 14px;
         }
-        .pixel-input:focus { outline: none; transform: translate(2px, 2px); }
-        .pixel-btn { 
-            border: 4px solid #000; 
-            box-shadow: 6px 6px 0px #000; 
+
+        .pixel-input:focus {
+            outline: none;
+            transform: translate(2px, 2px);
+        }
+
+        .pixel-btn {
+            border: 4px solid #000;
+            box-shadow: 6px 6px 0px #000;
             transition: all 0.1s;
             font-family: 'Press Start 2P', cursive;
         }
-        .pixel-btn:hover { transform: translate(2px, 2px); box-shadow: 4px 4px 0px #000; }
-        .pixel-btn:active { transform: translate(6px, 6px); box-shadow: 0px 0px 0px #000; }
-        .ql-toolbar, .ql-container { border: 4px solid #000 !important; }
-        .ql-toolbar { 
+
+        .pixel-btn:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        .pixel-btn:active {
+            transform: translate(6px, 6px);
+            box-shadow: 0px 0px 0px #000;
+        }
+
+        .ql-toolbar,
+        .ql-container {
+            border: 4px solid #000 !important;
+        }
+
+        .ql-toolbar {
             border-bottom: 0 !important;
             background: #f8f9fa;
         }
-        .ql-editor { 
-            min-height: 150px; 
+
+        .ql-editor {
+            min-height: 150px;
             background-color: #fff;
             font-size: 14px;
             font-family: 'Noto Sans', sans-serif;
         }
-        .ql-snow .ql-picker { font-size: 13px; }
+
+        .ql-snow .ql-picker {
+            font-size: 13px;
+        }
     </style>
 </head>
+
 <body class="bg-neo-yellow text-black">
 
     <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
@@ -80,49 +119,73 @@
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-center">
                 <h1 class="text-sm text-pixel">Dashboard Admin</h1>
-                <button id="logoutBtn" class="bg-red-500 text-white px-3 py-1.5 text-[10px] text-pixel pixel-btn">Logout</button>
+                <button id="logoutBtn"
+                    class="bg-red-500 text-white px-3 py-1.5 text-[10px] text-pixel pixel-btn">Logout</button>
             </div>
         </div>
     </nav>
 
     <main class="max-w-7xl mx-auto py-4 px-4">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
+
             <div class="bg-neo-blue p-4 pixel-border">
-                <h2 id="formTitle" class="text-xs text-pixel bg-white px-3 py-1.5 pixel-border-sm inline-block mb-4">Tambah Soal Kuis</h2>
-                 <button onclick="window.location.href='/monitor'" class="bg-neo-purple text-black px-3 py-1.5 text-[10px] text-pixel pixel-btn flex items-center gap-2 mb-4">
-                        Monitoring Siswa
+                <h2 id="formTitle" class="text-xs text-pixel bg-white px-3 py-1.5 pixel-border-sm inline-block mb-4">
+                    Tambah Soal Kuis</h2>
+                <button onclick="window.location.href='/monitor'"
+                    class="bg-neo-purple text-black px-3 py-1.5 text-[10px] text-pixel pixel-btn flex items-center gap-2 mb-4">
+                    Monitoring Siswa
+                </button>
+                <button onclick="window.location.href='/menyusul'"
+                    class="bg-neo-yellow text-black px-3 py-1.5 text-[10px] text-pixel pixel-btn flex items-center gap-2 mb-4">
+                    Tambah nilai menyusul
                 </button>
                 <form id="addQuizForm" class="space-y-3">
                     <input type="hidden" id="editQuizId">
                     <input type="hidden" id="imageBase64" name="imageBase64">
                     <input type="hidden" id="imageMimeType" name="imageMimeType">
                     <div>
-                        <label class="block text-[10px] text-pixel bg-white px-2 py-1 pixel-border-sm inline-block mb-2">Pertanyaan</label>
+                        <label
+                            class="block text-[10px] text-pixel bg-white px-2 py-1 pixel-border-sm inline-block mb-2">Pertanyaan</label>
                         <div id="editor"></div>
                     </div>
                     <div>
-                        <label class="block text-[10px] text-pixel bg-white px-2 py-1 pixel-border-sm inline-block mb-2">Gambar (Opsional)</label>
-                        <input type="file" id="image_file" name="image_file" accept="image/png, image/jpeg" class="w-full text-xs p-2 pixel-input file:mr-3 file:py-1 file:px-2 file:border-0 file:text-[10px] file:text-pixel file:bg-neo-yellow file:text-black hover:file:bg-neo-pink"/>
+                        <label
+                            class="block text-[10px] text-pixel bg-white px-2 py-1 pixel-border-sm inline-block mb-2">Gambar
+                            (Opsional)</label>
+                        <input type="file" id="image_file" name="image_file" accept="image/png, image/jpeg"
+                            class="w-full text-xs p-2 pixel-input file:mr-3 file:py-1 file:px-2 file:border-0 file:text-[10px] file:text-pixel file:bg-neo-yellow file:text-black hover:file:bg-neo-pink" />
                         <div class="mt-2">
-                            <img id="image_preview" class="hidden w-24 h-24 object-cover pixel-border-sm" src="" alt="Preview">
-                            <button type="button" id="removeImageBtn" class="hidden mt-2 text-[10px] bg-red-500 text-white px-2 py-1 text-pixel pixel-btn">Hapus</button>
+                            <img id="image_preview" class="hidden w-24 h-24 object-cover pixel-border-sm" src=""
+                                alt="Preview">
+                            <button type="button" id="removeImageBtn"
+                                class="hidden mt-2 text-[10px] bg-red-500 text-white px-2 py-1 text-pixel pixel-btn">Hapus</button>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 gap-2">
-                        <input type="text" id="option_a" placeholder="Pilihan A" required class="w-full px-2 py-1.5 pixel-input text-sm">
-                        <input type="text" id="option_b" placeholder="Pilihan B" required class="w-full px-2 py-1.5 pixel-input text-sm">
-                        <input type="text" id="option_c" placeholder="Pilihan C" required class="w-full px-2 py-1.5 pixel-input text-sm">
-                        <input type="text" id="option_d" placeholder="Pilihan D" required class="w-full px-2 py-1.5 pixel-input text-sm">
-                        <input type="text" id="option_e" placeholder="Pilihan E" required class="w-full px-2 py-1.5 pixel-input text-sm">
+                        <input type="text" id="option_a" placeholder="Pilihan A" required
+                            class="w-full px-2 py-1.5 pixel-input text-sm">
+                        <input type="text" id="option_b" placeholder="Pilihan B" required
+                            class="w-full px-2 py-1.5 pixel-input text-sm">
+                        <input type="text" id="option_c" placeholder="Pilihan C" required
+                            class="w-full px-2 py-1.5 pixel-input text-sm">
+                        <input type="text" id="option_d" placeholder="Pilihan D" required
+                            class="w-full px-2 py-1.5 pixel-input text-sm">
+                        <input type="text" id="option_e" placeholder="Pilihan E" required
+                            class="w-full px-2 py-1.5 pixel-input text-sm">
                     </div>
                     <div>
-                        <label class="block text-[10px] text-pixel bg-white px-2 py-1 pixel-border-sm inline-block mb-2">Jawaban Benar</label>
-                        <select id="correct_answer" required class="w-full px-2 py-1.5 pixel-input appearance-none text-sm"></select>
+                        <label
+                            class="block text-[10px] text-pixel bg-white px-2 py-1 pixel-border-sm inline-block mb-2">Jawaban
+                            Benar</label>
+                        <select id="correct_answer" required
+                            class="w-full px-2 py-1.5 pixel-input appearance-none text-sm"></select>
                     </div>
                     <div class="flex gap-2 pt-3">
-                        <button id="submitBtn" type="submit" class="flex-1 bg-neo-green text-black py-1.5 text-pixel text-[10px] pixel-btn">Simpan Soal</button>
-                        <button id="cancelBtn" type="button" class="hidden flex-1 bg-gray-500 text-white py-1.5 text-pixel text-[10px] pixel-btn">Batal</button>
+                        <button id="submitBtn" type="submit"
+                            class="flex-1 bg-neo-green text-black py-1.5 text-pixel text-[10px] pixel-btn">Simpan
+                            Soal</button>
+                        <button id="cancelBtn" type="button"
+                            class="hidden flex-1 bg-gray-500 text-white py-1.5 text-pixel text-[10px] pixel-btn">Batal</button>
                     </div>
                 </form>
             </div>
@@ -136,19 +199,34 @@
 
         <div class="bg-neo-green p-4 pixel-border mt-6">
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-4 gap-3">
-                 <h2 class="text-xs text-pixel bg-white px-3 py-1.5 pixel-border-sm inline-block">Hasil Jawaban Siswa</h2>
+                <h2 class="text-xs text-pixel bg-white px-3 py-1.5 pixel-border-sm inline-block">Hasil Jawaban Siswa
+                </h2>
                 <div class="flex flex-wrap items-center gap-3">
                     <div class="flex items-center gap-2">
                         <label class="text-[10px] text-pixel">Filter Kelas:</label>
                         <select id="classFilter" class="px-2 py-1 pixel-input appearance-none text-xs"></select>
                     </div>
-                    <button id="downloadBtn" class="bg-neo-blue text-black px-3 py-1.5 text-[10px] text-pixel pixel-btn flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                    <button id="downloadBtn"
+                        class="bg-neo-blue text-black px-3 py-1.5 text-[10px] text-pixel pixel-btn flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="3">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
                         Download
+                    </button>
+                    <button id="deleteAllBtn"
+                        class="bg-red-500 text-white px-3 py-1.5 text-[10px] text-pixel pixel-btn flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="3">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Hapus Semua
                     </button>
                 </div>
             </div>
-            
+
             <div class="overflow-x-auto pixel-border bg-white">
                 <table class="min-w-full divide-y-4 divide-black">
                     <thead class="bg-neo-yellow">
@@ -177,20 +255,21 @@
         const editQuizIdInput = document.getElementById('editQuizId');
         const classFilter = document.getElementById('classFilter');
         const downloadBtn = document.getElementById('downloadBtn');
+        const deleteAllBtn = document.getElementById('deleteAllBtn');
         const loadingOverlay = document.getElementById('loadingOverlay');
         const imageFileInput = document.getElementById('image_file');
         const imagePreview = document.getElementById('image_preview');
         const removeImageBtn = document.getElementById('removeImageBtn');
         const imageBase64Input = document.getElementById('imageBase64');
         const imageMimeTypeInput = document.getElementById('imageMimeType');
-        
+
         const toolbarOptions = [
             [{ 'header': [1, 2, 3, 4, 5, 6, false] }, { 'font': [] }],
             ['bold', 'italic', 'underline', 'strike'],
             [{ 'color': [] }, { 'background': [] }],
-            [{ 'script': 'sub'}, { 'script': 'super' }],
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
-            [{ 'indent': '-1'}, { 'indent': '+1' }],
+            [{ 'script': 'sub' }, { 'script': 'super' }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+            [{ 'indent': '-1' }, { 'indent': '+1' }],
             [{ 'direction': 'rtl' }, { 'align': [] }],
             ['blockquote', 'code-block', 'link'],
             ['clean']
@@ -207,8 +286,8 @@
             const classSelect = document.getElementById('classFilter');
             const answerSelect = document.getElementById('correct_answer');
             const classes = ["semua", "XII.H", "XII.I", "XII.J"];
-            const answers = [{value: 'a', text: 'A'}, {value: 'b', text: 'B'}, {value: 'c', text: 'C'}, {value: 'd', text: 'D'}, {value: 'e', text: 'E'}];
-            
+            const answers = [{ value: 'a', text: 'A' }, { value: 'b', text: 'B' }, { value: 'c', text: 'C' }, { value: 'd', text: 'D' }, { value: 'e', text: 'E' }];
+
             classSelect.innerHTML = classes.map(c => `<option value="${c}">${c === 'semua' ? 'Semua Kelas' : c}</option>`).join('');
             answerSelect.innerHTML = answers.map(a => `<option value="${a.value}">${a.text}</option>`).join('');
         }
@@ -218,8 +297,9 @@
             loadQuizzes();
             loadSubmissions();
         });
-        
+
         classFilter.addEventListener('change', () => loadSubmissions(classFilter.value));
+        deleteAllBtn.addEventListener('click', handleDeleteAll);
         downloadBtn.addEventListener('click', downloadExcel);
         cancelBtn.addEventListener('click', cancelEdit);
 
@@ -287,7 +367,7 @@
             formTitle.textContent = 'Edit Soal Kuis';
             submitBtn.textContent = 'Update Soal';
             cancelBtn.classList.remove('hidden');
-            
+
             editQuizIdInput.value = quizToEdit.id;
             quill.root.innerHTML = quizToEdit.question;
 
@@ -300,14 +380,14 @@
             } else {
                 removeImageBtn.click();
             }
-            
+
             quizForm.option_a.value = quizToEdit.options.a;
             quizForm.option_b.value = quizToEdit.options.b;
             quizForm.option_c.value = quizToEdit.options.c;
             quizForm.option_d.value = quizToEdit.options.d;
             quizForm.option_e.value = quizToEdit.options.e;
             quizForm.correct_answer.value = quizToEdit.correct_answer;
-            
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -343,7 +423,7 @@
         async function loadSubmissions(filterKelas = 'semua') {
             const response = await fetch(`/api/submissions?kelas=${encodeURIComponent(filterKelas)}`);
             const submissions = await response.json();
-            
+
             submissionsTable.innerHTML = submissions.map(s => `
                 <tr>
                     <td class="px-4 py-2 whitespace-nowrap text-sm">${s.student_name}</td>
@@ -383,7 +463,7 @@
                 cancelEdit();
                 loadQuizzes();
             } catch (error) {
-                 Swal.fire('Gagal', `Terjadi kesalahan: ${error.message}`, 'error');
+                Swal.fire('Gagal', `Terjadi kesalahan: ${error.message}`, 'error');
             } finally {
                 loadingOverlay.classList.add('hidden');
             }
@@ -401,7 +481,7 @@
                 Swal.fire('Dihapus!', 'Soal telah berhasil dihapus.', 'success');
             }
         }
-        
+
         async function deleteSubmission(absen, kelas) {
             const result = await Swal.fire({
                 title: 'Anda yakin?', text: `Hapus nilai siswa absen ${absen} dari kelas ${kelas}?`, icon: 'warning',
@@ -414,7 +494,53 @@
                 Swal.fire('Dihapus!', 'Nilai siswa telah dihapus.', 'success');
             }
         }
-        
+        async function handleDeleteAll() {
+            const selectedClass = classFilter.value;
+            const className = selectedClass === 'semua' ? 'Semua Kelas' : `kelas ${selectedClass}`;
+
+            // Konfirmasi ganda untuk aksi berbahaya
+            const result = await Swal.fire({
+                title: `Remove submission ${selectedClass}`,
+                html: `Tindakan ini akan menghapus semua nilai ${selectedClass} pastikan anda sudah mendownload semua nilai
+               <br>Ketik <b>${selectedClass}</b> di bawah ini untuk konfirmasi:`,
+                icon: 'warning',
+                input: 'text',
+                inputPlaceholder: `Ketik "${selectedClass}"`,
+                inputValidator: (value) => {
+                    if (value !== selectedClass) {
+                        return 'Ketik tidak sesuai. Harap ketik nama kelas yang benar.'
+                    }
+                },
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus Semuanya!',
+                cancelButtonText: 'Batal'
+            });
+
+            // Jika konfirmasi berhasil
+            if (result.isConfirmed) {
+                loadingOverlay.classList.remove('hidden');
+                try {
+                    const response = await fetch(`/api/submissions/all?kelas=${encodeURIComponent(selectedClass)}`, {
+                        method: 'DELETE'
+                    });
+
+                    const data = await response.json();
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Gagal menghapus data.');
+                    }
+
+                    Swal.fire('Berhasil Dihapus!', data.message, 'success');
+                    loadSubmissions(selectedClass); // Muat ulang data tabel
+
+                } catch (error) {
+                    Swal.fire('Gagal', `Terjadi kesalahan: ${error.message}`, 'error');
+                } finally {
+                    loadingOverlay.classList.add('hidden');
+                }
+            }
+        }
         logoutBtn.addEventListener('click', async () => {
             const response = await fetch('/api/logout', { method: 'POST' });
             if (response.ok) {
@@ -423,4 +549,5 @@
         });
     </script>
 </body>
+
 </html>

@@ -55,6 +55,16 @@ const setupDatabase = async () => {
             UNIQUE(student_absen, student_class)
         );
     `);
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS susulan (
+        id SERIAL PRIMARY KEY,
+        nama_siswa VARCHAR(255) NOT NULL,
+        kelas VARCHAR(50) NOT NULL,
+        nilai INTEGER NOT NULL,
+        catatan TEXT,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
     console.log("✅ Skema database sudah sesuai.");
   } catch (err) {
     if (!err.message.includes("does not exist") && !err.message.includes("already exists")) {
@@ -89,6 +99,7 @@ app.post("/api/login", (req, res) => {
 });
 
 app.get("/dashboard", checkAuth, (req, res) => res.sendFile(path.join(__dirname, "public", "dashboard.html")));
+app.get("/menyusul", checkAuth, (req, res) => res.sendFile(path.join(__dirname, "public", "menyusul.html")));
 
 app.post("/api/logout", (req, res) => {
   res.clearCookie("session_token");
@@ -224,7 +235,37 @@ app.get("/api/last-submission", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+app.delete("/api/submissions/all", checkAuth, async (req, res) => {
+  const { kelas } = req.query; // Ambil 'kelas' dari query parameter
 
+  if (!kelas) {
+    return res.status(400).json({ success: false, message: "Filter kelas wajib disertakan." });
+  }
+
+  try {
+    let queryText;
+    const params = [];
+    let message;
+
+    if (kelas === "semua") {
+      // Perintah TRUNCATE seperti yang Anda minta, untuk mereset semua data
+      queryText = "TRUNCATE TABLE submissions RESTART IDENTITY";
+      message = "Semua data nilai dari semua kelas berhasil dihapus.";
+    } else {
+      // Perintah DELETE...WHERE untuk kelas spesifik
+      queryText = "DELETE FROM submissions WHERE student_class = $1";
+      params.push(kelas);
+      message = `Data nilai untuk kelas ${kelas} berhasil dihapus.`;
+    }
+
+    await pool.query(queryText, params);
+    res.status(200).json({ success: true, message: message });
+
+  } catch (err) {
+    console.error("Error deleting bulk submissions:", err);
+    res.status(500).json({ success: false, message: "Gagal menghapus data nilai", error: err.message });
+  }
+});
 app.post("/api/check-absen", async (req, res) => {
   const { student_absen, student_class } = req.body;
   try {
@@ -382,7 +423,96 @@ app.get("/api/sessions", checkAuth, async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+// API: GET data susulan (dengan pagination)
+app.get("/api/susulan", checkAuth, async (req, res) => {
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 10;
+  const offset = (page - 1) * limit;
 
+  try {
+    // Query untuk data berpaginasi
+    const dataQuery = pool.query(
+      "SELECT * FROM susulan ORDER BY created_at DESC LIMIT $1 OFFSET $2",
+      [limit, offset]
+    );
+
+    // Query untuk total data
+    const countQuery = pool.query("SELECT COUNT(*) FROM susulan");
+
+    // Jalankan kedua query secara bersamaan
+    const [dataResult, countResult] = await Promise.all([dataQuery, countQuery]);
+
+    const totalCount = parseInt(countResult.rows[0].count, 10);
+    const totalPages = Math.ceil(totalCount / limit);
+
+    res.status(200).json({
+      data: dataResult.rows,
+      pagination: {
+        currentPage: page,
+        totalPages: totalPages,
+        totalCount: totalCount,
+        limit: limit,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server error", error: err.message });
+  }
+});
+
+// API: POST data susulan baru
+app.post("/api/susulan", checkAuth, async (req, res) => {
+  const { nama_siswa, kelas, nilai, catatan } = req.body;
+  if (!nama_siswa || !kelas || nilai === undefined) {
+    return res.status(400).json({ success: false, message: "Nama, Kelas, dan Nilai wajib diisi." });
+  }
+
+  try {
+    const { rows } = await pool.query(
+      "INSERT INTO susulan (nama_siswa, kelas, nilai, catatan) VALUES ($1, $2, $3, $4) RETURNING *",
+      [nama_siswa, kelas, nilai, catatan || null]
+    );
+    res.status(201).json({ success: true, data: rows[0] });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Gagal menyimpan data", error: err.message });
+  }
+});
+
+// API: PUT (Update) data susulan
+app.put("/api/susulan/:id", checkAuth, async (req, res) => {
+  const { id } = req.params;
+  const { nama_siswa, kelas, nilai, catatan } = req.body;
+
+  if (!nama_siswa || !kelas || nilai === undefined) {
+    return res.status(400).json({ success: false, message: "Nama, Kelas, dan Nilai wajib diisi." });
+  }
+
+  try {
+    const { rows } = await pool.query(
+      "UPDATE susulan SET nama_siswa = $1, kelas = $2, nilai = $3, catatan = $4 WHERE id = $5 RETURNING *",
+      [nama_siswa, kelas, nilai, catatan || null, id]
+    );
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Data tidak ditemukan." });
+    }
+    res.status(200).json({ success: true, data: rows[0] });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Gagal mengupdate data", error: err.message });
+  }
+});
+
+// API: DELETE data susulan
+app.delete("/api/susulan/:id", checkAuth, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query("DELETE FROM susulan WHERE id = $1", [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ success: false, message: "Data tidak ditemukan." });
+    }
+    res.status(200).json({ success: true, message: "Data berhasil dihapus." });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Gagal menghapus data", error: err.message });
+  }
+});
 app.listen(PORT, async () => {
   await setupDatabase();
   console.log(`🚀 Server berjalan di http://localhost:${PORT}`);

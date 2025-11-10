@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Siswa Susulan</title>
+    <link rel="shortcut icon" href="https://6afuiqe8xb.ucarecd.net/278cf1a5-2273-4c27-89a9-b2f60b90e75d/shibainuwrittingonpapernoteillustrationsvgdownloadpng9803777.png" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        // Konfigurasi Tailwind (sama seperti dashboard.html)
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neo-yellow': '#FFEB3B', 'neo-pink': '#FF6B9D',
+                        'neo-blue': '#4FC3F7', 'neo-green': '#66FF99',
+                        'neo-purple': '#C77DFF', 'neo-orange': '#FF9800',
+                    },
+                    fontFamily: {
+                        'pixel': ['"Press Start 2P"', 'cursive'],
+                        'sans': ['"Noto Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Styling (sama seperti dashboard.html) */
+        body { font-family: 'Noto Sans', sans-serif; background-color: #FFEB3B; font-size: 14px; line-height: 1.5; }
+        .text-pixel { font-family: 'Press Start 2P', cursive; }
+        .pixel-border { border: 4px solid #000; box-shadow: 8px 8px 0px #000; }
+        .pixel-border-sm { border: 3px solid #000; box-shadow: 4px 4px 0px #000; }
+        .pixel-input { border: 4px solid #000; background-color: white; font-family: 'Noto Sans', sans-serif; font-size: 14px; }
+        .pixel-input:focus { outline: none; transform: translate(2px, 2px); }
+        .pixel-btn { border: 4px solid #000; box-shadow: 6px 6px 0px #000; transition: all 0.1s; font-family: 'Press Start 2P', cursive; }
+        .pixel-btn:hover { transform: translate(2px, 2px); box-shadow: 4px 4px 0px #000; }
+        .pixel-btn:active { transform: translate(6px, 6px); box-shadow: 0px 0px 0px #000; }
+        .pixel-btn:disabled { background-color: #9e9e9e; box-shadow: 4px 4px 0px #000; transform: translate(2px, 2px); cursor: not-allowed; }
+    </style>
+</head>
+<body class="bg-neo-yellow text-black">
+
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+        <div class="flex flex-col items-center">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
+            <p class="text-white text-xs text-pixel mt-4">Memproses...</p>
+        </div>
+    </div>
+
+    <nav class="bg-neo-pink p-3 pixel-border mb-6">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-sm text-pixel">Data Susulan</h1>
+                <div>
+                    <a href="/dashboard" class="bg-neo-blue text-black px-3 py-1.5 text-[10px] text-pixel pixel-btn mr-4">Dashboard</a>
+                    <button id="logoutBtn" class="bg-red-500 text-white px-3 py-1.5 text-[10px] text-pixel pixel-btn">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto py-4 px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <div class="lg:col-span-1 bg-neo-blue p-4 pixel-border h-fit">
+                <h2 id="formTitle" class="text-xs text-pixel bg-white px-3 py-1.5 pixel-border-sm inline-block mb-4">Tambah Data Susulan</h2>
+                <form id="susulanForm" class="space-y-3">
+                    <input type="hidden" id="editId">
+                    <div>
+                        <label for="nama_siswa" class="block text-[10px] text-pixel bg-white px-2 py-1 pixel-border-sm inline-block mb-2">Nama Siswa</label>
+                        <input type="text" id="nama_siswa" required class="w-full px-2 py-1.5 pixel-input text-sm">
+                    </div>
+                    <div>
+                        <label for="kelas" class="block text-[10px] text-pixel bg-white px-2 py-1 pixel-border-sm inline-block mb-2">Kelas</label>
+                        <select id="kelas" required class="w-full px-2 py-1.5 pixel-input appearance-none text-sm"></select>
+                    </div>
+                    <div>
+                        <label for="nilai" class="block text-[10px] text-pixel bg-white px-2 py-1 pixel-border-sm inline-block mb-2">Nilai</label>
+                        <input type="number" id="nilai" min="0" max="100" required class="w-full px-2 py-1.5 pixel-input text-sm">
+                    </div>
+                    <div>
+                        <label for="catatan" class="block text-[10px] text-pixel bg-white px-2 py-1 pixel-border-sm inline-block mb-2">Catatan (Opsional)</label>
+                        <textarea id="catatan" rows="3" class="w-full px-2 py-1.5 pixel-input text-sm"></textarea>
+                    </div>
+                    
+                    <div class="flex gap-2 pt-3">
+                        <button id="submitBtn" type="submit" class="flex-1 bg-neo-green text-black py-1.5 text-pixel text-[10px] pixel-btn">Simpan</button>
+                        <button id="cancelBtn" type="button" class="hidden flex-1 bg-gray-500 text-white py-1.5 text-pixel text-[10px] pixel-btn">Batal</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="lg:col-span-2 bg-neo-green p-4 pixel-border">
+                <h2 class="text-xs text-pixel bg-white px-3 py-1.5 pixel-border-sm inline-block mb-4">Daftar Siswa Susulan</h2>
+                
+                <div class="overflow-x-auto pixel-border bg-white mb-4">
+                    <table class="min-w-full divide-y-4 divide-black">
+                        <thead class="bg-neo-yellow">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-[10px] text-pixel uppercase">Nama</th>
+                                <th class="px-4 py-2 text-left text-[10px] text-pixel uppercase">Kelas</th>
+                                <th class="px-4 py-2 text-left text-[10px] text-pixel uppercase">Nilai</th>
+                                <th class="px-4 py-2 text-left text-[10px] text-pixel uppercase">Catatan</th>
+                                <th class="px-4 py-2 text-left text-[10px] text-pixel uppercase">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="susulanTableBody" class="bg-white divide-y-4 divide-black">
+                            </tbody>
+                    </table>
+                </div>
+
+                <div class="flex justify-between items-center mt-4">
+                    <button id="prevPageBtn" class="bg-neo-orange text-black px-3 py-1.5 text-[10px] text-pixel pixel-btn" disabled>
+                        &lt; Sebelumnya
+                    </button>
+                    <span id="pageInfo" class="text-sm font-semibold">Halaman 1 dari 1</span>
+                    <button id="nextPageBtn" class="bg-neo-orange text-black px-3 py-1.5 text-[10px] text-pixel pixel-btn" disabled>
+                        Selanjutnya &gt;
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- Variabel Global ---
+        const susulanForm = document.getElementById('susulanForm');
+        const formTitle = document.getElementById('formTitle');
+        const submitBtn = document.getElementById('submitBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const editIdInput = document.getElementById('editId');
+        const susulanTableBody = document.getElementById('susulanTableBody');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const logoutBtn = document.getElementById('logoutBtn');
+        
+        // Elemen Pagination
+        const prevPageBtn = document.getElementById('prevPageBtn');
+        const nextPageBtn = document.getElementById('nextPageBtn');
+        const pageInfo = document.getElementById('pageInfo');
+
+        // State Pagination
+        let currentPage = 1;
+        const dataLimit = 10;
+        let totalPages = 1;
+
+        // --- Inisialisasi ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateKelasSelect();
+            loadData(currentPage);
+        });
+
+        // --- Setup Pilihan Kelas ---
+        function populateKelasSelect() {
+            const classSelect = document.getElementById('kelas');
+            // Menggunakan daftar kelas yang sama dari dashboard Anda (tanpa "semua")
+            const classes = ["XII.H", "XII.I", "XII.J"]; 
+            classSelect.innerHTML = '<option value="" disabled selected>Pilih Kelas</option>' +
+                classes.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+
+        // --- CRUD & Logika Data ---
+
+        /** Memuat data dari server */
+        async function loadData(page) {
+            loadingOverlay.classList.remove('hidden');
+            try {
+                const response = await fetch(`/api/susulan?page=${page}&limit=${dataLimit}`);
+                if (!response.ok) throw new Error('Gagal memuat data');
+                
+                const result = await response.json();
+                renderTable(result.data);
+                renderPagination(result.pagination);
+            } catch (error) {
+                console.error(error);
+                Swal.fire('Error', error.message, 'error');
+                susulanTableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-sm">Gagal memuat data.</td></tr>`;
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
+        }
+
+        /** Merender baris tabel */
+        function renderTable(data) {
+            if (data.length === 0) {
+                susulanTableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-sm">Belum ada data susulan.</td></tr>`;
+                return;
+            }
+            susulanTableBody.innerHTML = data.map(item => `
+                <tr class="hover:bg-gray-100">
+                    <td class="px-4 py-2 whitespace-nowrap text-sm font-semibold">${escapeHTML(item.nama_siswa)}</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm">${escapeHTML(item.kelas)}</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm font-bold">${item.nilai}</td>
+                    <td class="px-4 py-2 text-sm max-w-xs truncate">${escapeHTML(item.catatan || '-')}</td>
+                    <td class="px-4 py-2 whitespace-nowrap">
+                        <button onclick='handleEdit(${JSON.stringify(item)})' class="text-[10px] bg-neo-yellow text-black px-2 py-1 text-pixel pixel-btn mr-2">Edit</button>
+                        <button onclick="handleDelete(${item.id})" class="text-[10px] bg-red-500 text-white px-2 py-1 text-pixel pixel-btn">Hapus</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        /** Merender kontrol pagination */
+        function renderPagination(pagination) {
+            currentPage = pagination.currentPage;
+            totalPages = pagination.totalPages || 1;
+            
+            pageInfo.textContent = `Halaman ${currentPage} dari ${totalPages}`;
+            
+            prevPageBtn.disabled = (currentPage <= 1);
+            nextPageBtn.disabled = (currentPage >= totalPages);
+        }
+
+        /** Submit form (Create atau Update) */
+        susulanForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            loadingOverlay.classList.remove('hidden');
+
+            const isEditing = !!editIdInput.value;
+            const payload = {
+                nama_siswa: document.getElementById('nama_siswa').value,
+                kelas: document.getElementById('kelas').value,
+                nilai: parseInt(document.getElementById('nilai').value, 10),
+                catatan: document.getElementById('catatan').value,
+            };
+
+            const url = isEditing ? `/api/susulan/${editIdInput.value}` : '/api/susulan';
+            const method = isEditing ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.message || 'Gagal menyimpan data.');
+                }
+
+                Swal.fire('Berhasil!', `Data berhasil ${isEditing ? 'diperbarui' : 'disimpan'}.`, 'success');
+                resetForm();
+                // Jika membuat, pergi ke halaman 1, jika mengedit, tetap di halaman ini
+                loadData(isEditing ? currentPage : 1); 
+            } catch (error) {
+                 Swal.fire('Gagal', `Terjadi kesalahan: ${error.message}`, 'error');
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
+        });
+
+        /** Menyiapkan form untuk mode Edit */
+        function handleEdit(item) {
+            formTitle.textContent = 'Edit Data Susulan';
+            submitBtn.textContent = 'Update';
+            cancelBtn.classList.remove('hidden');
+            
+            editIdInput.value = item.id;
+            document.getElementById('nama_siswa').value = item.nama_siswa;
+            document.getElementById('kelas').value = item.kelas;
+            document.getElementById('nilai').value = item.nilai;
+            document.getElementById('catatan').value = item.catatan || '';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /** Menghapus data */
+        async function handleDelete(id) {
+            const result = await Swal.fire({
+                title: 'Anda yakin?', text: "Data ini akan dihapus permanen!", icon: 'warning',
+                showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!', cancelButtonText: 'Batal'
+            });
+            
+            if (result.isConfirmed) {
+                loadingOverlay.classList.remove('hidden');
+                try {
+                    await fetch(`/api/susulan/${id}`, { method: 'DELETE' });
+                    Swal.fire('Dihapus!', 'Data telah berhasil dihapus.', 'success');
+                    
+                    // Logika reload pagination setelah hapus
+                    const tableBody = document.getElementById('susulanTableBody');
+                    if (tableBody.rows.length === 1 && currentPage > 1) {
+                        // Jika ini item terakhir di halaman ini (dan bukan halaman 1), pindah ke halaman sebelumnya
+                        loadData(currentPage - 1);
+                    } else {
+                        loadData(currentPage);
+                    }
+                } catch (error) {
+                    Swal.fire('Gagal', 'Gagal menghapus data.', 'error');
+                } finally {
+                    loadingOverlay.classList.add('hidden');
+                }
+            }
+        }
+
+        // --- Event Listeners & Utility ---
+        
+        /** Tombol Batal Edit */
+        cancelBtn.addEventListener('click', resetForm);
+
+        /** Reset Form ke kondisi awal */
+        function resetForm() {
+            formTitle.textContent = 'Tambah Data Susulan';
+            submitBtn.textContent = 'Simpan';
+            cancelBtn.classList.add('hidden');
+            editIdInput.value = '';
+            susulanForm.reset();
+            document.getElementById('kelas').value = ""; // Reset select
+        }
+
+        /** Navigasi Halaman */
+        prevPageBtn.addEventListener('click', () => {
+            if (currentPage > 1) loadData(currentPage - 1);
+        });
+        
+        nextPageBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) loadData(currentPage + 1);
+        });
+
+        /** Logout (sama seperti dashboard.html) */
+        logoutBtn.addEventListener('click', async () => {
+            const response = await fetch('/api/logout', { method: 'POST' });
+            if (response.ok) {
+                window.location.href = (await response.json()).redirectUrl;
+            }
+        });
+
+        /** Utility untuk menghindari XSS */
+        function escapeHTML(str) {
+            if (str === null || str === undefined) return '';
+            return str.toString()
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>
